@@ -124,30 +124,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
                 </body>
 </html>
-<!-- <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="showModalLabel">Détails du contact</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                 Afficher ici les détails du contact et de l'entreprise avec des champs inactifs (non éditables) 
-                <h6>Informations du contact :</h6>
-                <p><strong>Nom :</strong> {{ $contact->nom }}</p>
-                <p><strong>Prénom :</strong> {{ $contact->prenom }}</p>
-                <!-- Ajoutez d'autres champs du contact ici 
-                <hr>
-                <h6>Informations de l'entreprise :</h6>
-                <p><strong>Nom :</strong> {{ $contact->organisation->nom }}</p>
-                <p><strong>Statut :</strong> {{ $contact->organisation->statut }}</p>
-                <!-- Ajoutez d'autres champs de l'entreprise ici 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
-</div> -->

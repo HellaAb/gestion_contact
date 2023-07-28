@@ -37,21 +37,20 @@ Route::get('/contacts-and-organisations', function () {
 
     return view('contacts_and_organisations', compact('contacts', 'organisations'));
 });
-Route::get('/contact/edit/{id}', [ContactController::class, 'edit'])->name('contact.edit');
+// Route::get('/contact/edit/{id}', [ContactController::class, 'edit'])->name('contact.edit');
 // // // Définir la route pour afficher le formulaire de modification de contact
 Route::get('/contact/edit/{id}', [ContactController::class, 'edit'])->name('contact.edit');
-
 // Définir la route pour traiter le formulaire de modification de contact (envoi du formulaire)
-Route::post('/contact/{id}', [ContactController::class, 'update'])->name('contact.update');
+ Route::get('/contact/{id}', [ContactController::class, 'update'])->name('contact.update');
 Route::post('/contact/valid', 'ContactController@valid')->name('contact.valid');
 Route::get('/add_modal', 'YourController@addModal')->name('add.modal');
 
 
 // // // Définir la route pour afficher le formulaire de confirmation de suppression de contact
-// Route::get('/contact/delete/{id}', [ContactController::class, 'confirmDelete'])->name('contact.delete');
+Route::get('/contact/delete/{id}', [ContactController::class, 'destroy'])->name('contact.delete');
 
 // // // Définir la route pour supprimer effectivement le contact (action de suppression)
-// Route::delete('/contact/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
+ Route::delete('/contact/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
 
 // // Définir la route pour supprimer effectivement le contact (action de suppression)
 // Route::delete('/contact/{id}', [ContactController::class, 'destroy'])->name('contact.destroy');
@@ -59,7 +58,7 @@ Route::get('/add_modal', 'YourController@addModal')->name('add.modal');
  Route::get('/contact/show/{id}', [ContactController::class, 'show'])->name('contact.show');
 // // // Définir la route pour afficher les détails d'un contact spécifique
 Route::get('/contact/{id}', [ContactController::class, 'show'])->name('contact.show');
-// Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+ Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 // // web.php
 
 // Route::delete('/contacts/{id}', 'ContactController@destroy')->name('contact.delete');

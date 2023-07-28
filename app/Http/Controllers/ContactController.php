@@ -36,11 +36,12 @@ class ContactController extends Controller
 
             return view('contacts_and_organisations', compact('contacts', 'organisations'));
         }
-        public function ajouter(){
+    public function ajouter()
+    {
             return view('add_modal');
-        }
-        public function valid(Request $request)
-        {
+    }
+    public function valid(Request $request)
+    {
     // Définir les règles de validation pour chaque champ
     $rules = [
         'prénom' => 'required|alpha', // Prénom (uniquement des lettres, obligatoire)
@@ -130,107 +131,86 @@ class ContactController extends Controller
 
     // Rediriger vers une page de succès ou une autre action
     return redirect()->route('success.page');
-}
-//         public function confirmDelete($id)
-//     {
-//         // Récupérer le contact correspondant à l'ID depuis la base de données
-//         $contact = Contact::find($id);
+    }
 
-//         // Vérifier si le contact existe
-//         if (!$contact) {
-//             // Gérer l'erreur si le contact n'est pas trouvé (par exemple, rediriger vers une page d'erreur)
-//         }
-
-//         // Afficher la vue du formulaire de confirmation de suppression avec le contact
-//         return view('confirm-delete', compact('contact'));
-//     }
-//     public function destroy($id)
-//     {
-//         // Trouver le contact en fonction de son ID
-//         $contact = Contact::findOrFail($id);
-
-//         // Supprimer le contact
-//         $contact->delete();
-
-//         // Rediriger vers la page d'index des contacts avec un message de succès
-//         return redirect()->route('contact.index')->with('success', 'Le contact a été supprimé avec succès.');
-//     }
- public function destroy($id)
- {
-     // Rechercher le contact par son ID
-     $contact = Contact::findOrFail($id);
- 
-     // Supprimer le contact
-     $contact->delete();
- 
-     // Rediriger vers la liste des contacts avec un message de confirmation
-     return redirect()->route('contact.index')->with('success', 'Le contact a été supprimé avec succès.');
- }
-    public function edit($id)
+    public function destroy($id)
     {
-        // Rechercher le contact par son ID
+        // Trouver le contact par son ID
         $contact = Contact::findOrFail($id);
 
-        // Récupérer les données de l'entreprise associée au contact
-        $entreprise = $contact->organisation;
+        // Supprimer le contact de la base de données
+        $contact->delete();
 
-        // Passer les données du contact et de l'entreprise à la vue pour les afficher dans la modal
-        return view('edit_modal', compact('contact', 'entreprise'));
+        // Rediriger vers la route "contacts_organisations" avec un message de succès
+        return redirect()->back()->with('success', 'Le contact a été supprimé avec succès.');
     }
-        public function update(Request $request, $id)
-        {
-            
-            // // Rechercher le contact par son ID
+
+
+    public function edit($id)
+    {
+            // Rechercher le contact par son ID
             $contact = Contact::findOrFail($id);
-            
+
             // Récupérer les données de l'entreprise associée au contact
             $entreprise = $contact->organisation;
 
-            // Mettre à jour les données du contact avec les nouvelles valeurs du formulaire
-            $contact->prenom = $request->input('prenom');
-            $contact->nom = $request->input('nom');
-            $contact->save();
+            // Passer les données du contact et de l'entreprise à la vue pour les afficher dans la modal
+            return view('edit_modal', compact('contact', 'entreprise'));
+    }
+    public function update(Request $request, $id)
+        {
+                
+                // // Rechercher le contact par son ID
+                $contact = Contact::findOrFail($id);
+                
+                // Récupérer les données de l'entreprise associée au contact
+                $entreprise = $contact->organisation;
 
-            // Mettre à jour les données de l'entreprise avec les nouvelles valeurs du formulaire
+                // Mettre à jour les données du contact avec les nouvelles valeurs du formulaire
+                $contact->prenom = $request->input('prenom');
+                $contact->nom = $request->input('nom');
+                $contact->save();
+
+                // Mettre à jour les données de l'entreprise avec les nouvelles valeurs du formulaire
+                $entreprise->nom = $request->input('entreprise');
+                $entreprise->statut = $request->input('statut');
+                $entreprise->save();
+
+                // Rediriger vers la liste des contacts avec un message de confirmation
+                return redirect()->route('contact.index')->with('success', 'Les données ont été mises à jour avec succès.');
+        }
+        public function show($id)
+        {
+            // Rechercher le contact par son ID
+            $contact = Contact::findOrFail($id);
+
+            // Charger la vue de la modal de visualisation avec les données du contact
+            return view('show_modal', compact('contact'));
+        }
+        public function store(Request $request)
+        {
+            // Valider les données du formulaire
+            $request->validate([
+                'prenom' => 'required',
+                'nom' => 'required',
+                'entreprise' => 'required',
+                'statut' => 'required',
+            ]);
+
+            // Créer une nouvelle entreprise
+            $entreprise = new Organisation;
             $entreprise->nom = $request->input('entreprise');
             $entreprise->statut = $request->input('statut');
             $entreprise->save();
 
+            // Créer un nouveau contact associé à l'entreprise
+            $contact = new Contact;
+            $contact->prenom = $request->input('prenom');
+            $contact->nom = $request->input('nom');
+            $contact->organisation_id = $entreprise->id; // Associer le contact à l'entreprise
+            $contact->save();
+
             // Rediriger vers la liste des contacts avec un message de confirmation
-            return redirect()->route('contact.index')->with('success', 'Les données ont été mises à jour avec succès.');
+            return redirect()->route('contact.index')->with('success', 'Le contact a été ajouté avec succès.');
         }
-        public function show($id)
-    {
-        // Rechercher le contact par son ID
-        $contact = Contact::findOrFail($id);
-
-        // Charger la vue de la modal de visualisation avec les données du contact
-        return view('show_modal', compact('contact'));
-    }
-    public function store(Request $request)
-    {
-        // Valider les données du formulaire
-        $request->validate([
-            'prenom' => 'required',
-            'nom' => 'required',
-            'entreprise' => 'required',
-            'statut' => 'required',
-        ]);
-
-        // Créer une nouvelle entreprise
-        $entreprise = new Organisation;
-        $entreprise->nom = $request->input('entreprise');
-        $entreprise->statut = $request->input('statut');
-        $entreprise->save();
-
-        // Créer un nouveau contact associé à l'entreprise
-        $contact = new Contact;
-        $contact->prenom = $request->input('prenom');
-        $contact->nom = $request->input('nom');
-        $contact->organisation_id = $entreprise->id; // Associer le contact à l'entreprise
-        $contact->save();
-
-        // Rediriger vers la liste des contacts avec un message de confirmation
-        return redirect()->route('contact.index')->with('success', 'Le contact a été ajouté avec succès.');
-    }
 }
