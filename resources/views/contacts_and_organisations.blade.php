@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LISTE DES CONTACTS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         /* Ajouter une classe personnalisée pour appliquer l'ombre au tableau */
@@ -110,6 +109,11 @@
 </head>
 
 <body>
+    @if(session('success'))
+    <div class="alert alert-success" role="alert">
+        {{ session('success') }}
+    </div>
+    @endif
     <!-- Utiliser la classe personnalisée "table-container" pour ajouter l'ombre au tableau -->
     <div class="container mt-5 p-4 table-container">
         <h5 class="mb-4">Liste des contacts</h5>
@@ -156,14 +160,16 @@
                         <!-- Colonne contenant les icônes CRUD -->
                         <div class="d-flex justify-content-between crud-icons">
                             <!-- Icônes pour les opérations CRUD -->
-                            <a href="{{ route('contact.edit', ['id' => $contact->id]) }}" class="btn-edit"><i
-                                    class="fa fa-edit mr-1 text-secondary"></i></a>
+                            <a href="{{ route('contact.edit', ['id' => $contact->id]) }}" class="btn-edit" data-toggle="modal" data-target="#editModal">
+                                <i class="fa fa-edit mr-1 text-secondary"></i>
+                            </a>
+
                             <!-- Ajoutez une classe unique "delete-icon" pour chaque icône de corbeille -->
                             <a href="{{ route('contact.delete', ['id' => $contact->id]) }}" class="delete-icon"
                                 data-contact-id="{{ $contact->id }}"><i class="fas fa-trash"
                                     style="color: red;"></i></a>
-                            <a href="{{ route('contact.show', ['id' => $contact->id]) }}" class="btn-show"><i
-                                    class="fa fa-eye text-secondary"></i></a>
+                            <a href="{{ route('contact.show', ['id' => $contact->id]) }}" class="btn-show" data-contact-id="{{ $contact->id }}">
+                                    <i class="fa fa-eye text-secondary"></i>
                         </div>
                     </td>
                 </tr>
@@ -185,8 +191,10 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body">
+                <div id="addModalContent">
                     <!-- Contenu de la page add_modal.blade.php chargé ici -->
                     @include('add_modal')
+                </div>
                 </div>
             </div>
         </div>
@@ -198,8 +206,9 @@
             <div class="modal-content d-flex justify-content-end">
                 <div class="modal-body">
                     <!-- Contenu de la page show_modal.blade.php chargé ici -->
+                <div id="showModalContent">
                     @include('show_modal')
-
+                </div>
                 </div>
                 <div class="bottom-rectangle">
                     <div class="col-12 d-flex justify-content-end">
@@ -213,24 +222,25 @@
     </div>
     <!-- Modal de de consultation d'un contact -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content d-flex justify-content-end">
-                <div class="modal-body">
-                    <!-- Contenu de la page show_modal.blade.php chargé ici -->
-                    @include('edit_modal')
-
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content d-flex justify-content-end">
+            <div class="modal-body">
+                <!-- Contenu de la page edit_modal.blade.php chargé ici -->
+                <div id="editModalContent">
+                @include('edit_modal')
                 </div>
-                <div class="bottom-rectangle">
-                    <div class="col-12 d-flex justify-content-end">
-                        <a href="/contacts-and-organisations/search" class="btn btn-secondary mr-2">Annuler</a>
-                        <button class="btn btn-primary ml-2" type="submit">Valider</button>
-                    </div>
-                </div>
-
             </div>
+            <div class="bottom-rectangle">
+                <div class="col-12 d-flex justify-content-end">
+                    <a href="/contacts-and-organisations/search" class="btn btn-secondary mr-2">Annuler</a>
+                    <button class="btn btn-primary ml-2" type="submit">Valider</button>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 
     <!-- Modal de confirmation de suppression -->
     @foreach ($contacts as $contact)
@@ -258,16 +268,13 @@
         </div>
     </div>
     @endforeach
-    @if(session('success'))
-    <div class="alert alert-success" role="alert">
-        {{ session('success') }}
-    </div>
-    @endif
+    
 
     <!-- Inclure les librairies JavaScript de jQuery et Bootstrap -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         // Récupérer tous les éléments de l'icône de corbeille en utilisant la classe unique "delete-icon"
         var deleteIcons = document.querySelectorAll('a.delete-icon');
@@ -305,9 +312,7 @@
                     // Insérer le contenu de la page dans le div "addModalContent"
                     contentDiv.innerHTML = data;
                 },
-                error: function (error) {
-                    console.error('Error:', error);
-                }
+              
             });
         });
 
@@ -330,33 +335,37 @@
             });
         });
 
-        // Récupérer tous les éléments du bouton "eye" par leur classe
         const showButtons = document.querySelectorAll('.btn-show');
 
-        // Ajouter un gestionnaire d'événements pour chaque bouton "eye"
-        showButtons.forEach(showButton => {
-            showButton.addEventListener('click', function (event) {
-                event.preventDefault();
+// Ajouter un gestionnaire d'événements pour chaque bouton "Show"
+showButtons.forEach(showButton => {
+    showButton.addEventListener('click', function (event) {
+        event.preventDefault();
 
-                // Afficher la modal "showModal"
+        // Récupérer l'ID du contact à partir de l'attribut data-contact-id du bouton "Show"
+        const contactId = showButton.dataset.contactId;
+
+        // Envoyer une requête AJAX pour récupérer les détails du contact
+        $.ajax({
+            url: '/contact/show/' + contactId, // Remplacez l'URL par l'URL correcte pour récupérer les détails du contact
+            type: 'GET',
+            success: function (data) {
+                // Mettre à jour le contenu de la fenêtre modale avec les détails du contact
+                const showModalContent = document.getElementById('showModalContent');
+                showModalContent.innerHTML = data;
+
+                // Afficher la fenêtre modale
                 $('#showModal').modal('show');
-
-                // Charger le contenu de la page "show_modal" en utilisant AJAX
-                $.ajax({
-                    url: '/show_modal', // Remplacez l'URL par l'URL correcte pour accéder à la page "show_modal"
-                    type: 'GET',
-                    success: function (data) {
-                        // Insérer le contenu de la page dans le div "showModalContent"
-                        const showModalContent = document.getElementById('showModalContent');
-                        showModalContent.innerHTML = data;
-                    },
-                    error: function (error) {
-                        console.error('Error:', error);
-                    }
-                });
-            });
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
         });
+    });
+});
 
+  // Attendez que le document soit prêt
+  $(document).ready(function () {
         // Récupérer tous les éléments du bouton "eye" par leur classe
         const editButtons = document.querySelectorAll('.btn-edit');
 
@@ -365,15 +374,15 @@
             editButton.addEventListener('click', function (event) {
                 event.preventDefault();
 
-                // Afficher la modal "showModal"
+                // Afficher la modal "editModal"
                 $('#editModal').modal('show');
 
-                // Charger le contenu de la page "show_modal" en utilisant AJAX
+                // Charger le contenu de la page "edit_modal" en utilisant AJAX
                 $.ajax({
-                    url: '/edit_modal', // Remplacez l'URL par l'URL correcte pour accéder à la page "show_modal"
+                    url: '/edit_modal', // Remplacez l'URL par l'URL correcte pour accéder à la page "edit_modal"
                     type: 'GET',
                     success: function (data) {
-                        // Insérer le contenu de la page dans le div "showModalContent"
+                        // Insérer le contenu de la page dans le div "editModalContent"
                         const editModalContent = document.getElementById('editModalContent');
                         editModalContent.innerHTML = data;
                     },
@@ -383,6 +392,8 @@
                 });
             });
         });
+    });
+
 
         let sortColumn = -1; // Variable pour garder en mémoire la colonne de tri
         let sortOrder = 1; // Variable pour garder en mémoire l'ordre de tri (1 pour ascendant, -1 pour descendant)

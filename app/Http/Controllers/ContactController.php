@@ -68,22 +68,14 @@ class ContactController extends Controller
 
     // Valider les données du formulaire avec les règles et messages personnalisés
     $validator = Validator::make($request->all(), $rules, $messages);
-
- 
-
-
     // Rediriger vers le formulaire avec les erreurs de validation si la validation échoue
     if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
     }
-
-
-
-        // Vérifier si le contact existe déjà (même prénom et même nom)
-        $existingContact = Contact::where('prenom', ucwords($rules['prenom']))
-        ->where('nom', ucwords($rules['nom']))
-        ->first();
-
+    // Vérifier si le contact existe déjà (même prénom et même nom)
+    $existingContact = Contact::where('prenom', ucwords($rules['prenom']))
+    ->where('nom', ucwords($rules['nom']))
+    ->first();
     if ($existingContact) {
     // Le contact existe déjà, afficher une modal d'alerte
     // Vous pouvez rediriger vers la vue contenant la modal ou retourner une réponse JSON pour gérer cela côté client
@@ -213,4 +205,9 @@ class ContactController extends Controller
             // Rediriger vers la liste des contacts avec un message de confirmation
             return redirect()->route('contact.index')->with('success', 'Le contact a été ajouté avec succès.');
         }
+        public function showEditModal()
+        {
+            return view('edit_modal');
+        }
+
 }

@@ -4,7 +4,6 @@
     <!-- ... Autres balises meta et CSS ... -->
     <title>AJOUTER UN CONTACT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Lien vers la bibliothèque font-awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -46,7 +45,7 @@
                     <div class="input-group has-validation">
                         <input type="text" class="form-control @error('prénom') is-invalid @enderror"
                                id="prénom" name="prénom"
-                               value="{{ $contact->nom }}" aria-describedby="inputGroupPrepend" readonly>
+                               value="{{ $contact->prenom }}" aria-describedby="inputGroupPrepend" readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -54,7 +53,7 @@
                     <div class="input-group has-validation">
                         <input type="text" class="form-control @error('nom') is-invalid @enderror"
                                id="nom" name="nom"
-                               value="{{ $contact->prenom }}" aria-describedby="inputGroupPrepend" readonly>
+                               value="{{ $contact->nom }}" aria-describedby="inputGroupPrepend" readonly>
                     </div>
                 </div>
                 <div class="col-12">
@@ -77,17 +76,9 @@
                 <label for="adresse" class="form-label">Adresse</label>
                 <div class="form-floating">
                     <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                    <label for="floatingTextarea2">{{  $contact->organisation->ville }}</label>
+                    <label for="floatingTextarea2" >{{  $contact->organisation->adresse }}</label>
                 </div>
                 </div>
-                <!-- <div class="col-12">
-                    <label for="adresse" class="form-label">Adresse</label>
-                    <div class="input-group has-validation">
-                        <input type="text" class="form-control @error('adresse') is-invalid @enderror"
-                               id="adresse" name="adresse"
-                               value="{{  $contact->organisation->ville }}" readonly>
-                    </div>
-                </div> -->
                 <div class="col-md-2">
                     <label for="code_postal" class="form-label">Code postal</label>
                     <div class="input-group has-validation">
