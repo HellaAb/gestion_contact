@@ -35,7 +35,7 @@
             <h5 class="mb-4">Ajouter un contact</h5>
             <form class="row g-3 needs-validation" action="{{ route('contact.valid') }}" method="POST" novalidate>
                 @csrf
-
+                
                 <div class="col-md-4">
                     <label for="prénom" class="form-label">Prénom</label>
                     <input type="text" class="form-control @error('prénom') is-invalid @enderror"

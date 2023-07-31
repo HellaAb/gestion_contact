@@ -79,7 +79,7 @@ class ContactController extends Controller
     if ($existingContact) {
     // Le contact existe déjà, afficher une modal d'alerte
     // Vous pouvez rediriger vers la vue contenant la modal ou retourner une réponse JSON pour gérer cela côté client
-    return response()->json(['message' => 'Le contact existe déjà.'], 422);
+    return response()->json(['error' => 'contact', 'message' => 'Le contact existe déjà.'], 422);
     }
 
     // Vérifier si l'entreprise existe déjà (même nom)

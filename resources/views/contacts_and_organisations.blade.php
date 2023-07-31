@@ -9,6 +9,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         /* Ajouter une classe personnalisée pour appliquer l'ombre au tableau */
+        .custom-table {
+        border-radius: 10px; /* Vous pouvez ajuster le rayon du border-radius comme vous le souhaitez */
+        box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.2); /* Vous pouvez ajuster la taille et la couleur de l'ombre comme vous le souhaitez */
+        }
         .table-container {
             background-color: #e3efec;
             padding: 15px;
@@ -105,6 +109,13 @@
         .modal-header {
             border-bottom: none;
         }
+        .btn-secondary {
+            /* Ajouter une bordure (shadow) sur tous les côtés */
+            box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
+            
+            /* Ajouter un rayon (border radius) pour des coins arrondis */
+            border-radius: 1px; /* Vous pouvez ajuster cette valeur selon vos préférences */
+        }
     </style>
 </head>
 
@@ -126,7 +137,7 @@
             <a href="\add_modal" id="btnAdd" class="btn btn-primary custom-add-button" data-toggle="modal"
                 data-target="#addModal">+ Ajouter</a>
         </div>
-        <table class="table" id="contacts-table">
+        <table class="table custom-table" id="contacts-table">
             <thead>
                 <tr>
                     <th class="sortable-column" data-column="contact.nom" scope="col" onclick="sortTable(0)">NOM DU
@@ -160,7 +171,7 @@
                         <!-- Colonne contenant les icônes CRUD -->
                         <div class="d-flex justify-content-between crud-icons">
                             <!-- Icônes pour les opérations CRUD -->
-                            <a href="{{ route('contact.edit', ['id' => $contact->id]) }}" class="btn-edit" data-toggle="modal" data-target="#editModal">
+                            <a href="{{ route('contact.edit', ['id' => $contact->id]) }}" class="btn-edit" data-contact-id="{{ $contact->id }}" data-toggle="modal" data-target="#editModal">
                                 <i class="fa fa-edit mr-1 text-secondary"></i>
                             </a>
 
@@ -261,7 +272,7 @@
                     <div class="col-12 d-flex justify-content-end">
                     <a href="/contacts-and-organisations/search" class="btn btn-secondary mr-2">Annuler</a>
                         <a href="{{ route('contact.destroy', ['id' => $contact->id]) }}" id="confirmDeleteButton"
-                            class="btn btn-danger ml-2">Confirmer</a>
+                            class="btn btn-danger ml-2" style="color:#FFFFFF" >Confirmer</a>
                     </div>
                 </div>
             </div>
